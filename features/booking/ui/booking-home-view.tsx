@@ -11,11 +11,12 @@ import {
 } from "@/shared/components/ui";
 import { getResourceTypeLabel } from "@/shared/lib/format";
 import { ui } from "@/styles/ui";
+import {AuthSession} from "@/features/auth/api/session";
 
 const heroActionsClassName = "mt-9 flex flex-wrap gap-3";
 const resourceMetaClassName = "mt-2 text-sm text-muted-foreground";
 
-export function BookingHomeView() {
+export function BookingHomeView({ session }: { session: AuthSession }) {
   const { data, isLoading } = useHomeOverview();
 
   if (isLoading || !data) {
@@ -53,12 +54,16 @@ export function BookingHomeView() {
               >
                 예약 생성하기
               </Link>
-              <Link
-                href="/admin"
-                className="rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold"
-              >
-                관리자 화면 보기
-              </Link>
+
+              {session?.user?.role === "ADMIN"
+                  ? <Link
+                      href="/admin"
+                      className="rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold"
+                    >
+                    관리자 화면 보기
+                    </Link>
+                  : null
+              }
             </div>
           </div>
 

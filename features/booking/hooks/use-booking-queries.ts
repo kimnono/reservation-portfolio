@@ -59,9 +59,10 @@ export function useBookingDetail(
   });
 }
 
-export function useCreateBooking() {
+export function useCreateBooking(options?: { redirectToMyReservations?: boolean }) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const redirectToMyReservations = options?.redirectToMyReservations ?? true;
 
   return useMutation({
     mutationFn: createBooking,
@@ -81,7 +82,13 @@ export function useCreateBooking() {
       queryClient.invalidateQueries({
         queryKey: ["dailySchedule"],
       });
-      router.push("/my-reservations");
+
+      if (redirectToMyReservations) {
+        router.push("/my-reservations");
+        router.refresh();
+        return;
+      }
+
       router.refresh();
     },
   });

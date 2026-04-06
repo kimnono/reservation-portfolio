@@ -19,8 +19,8 @@ import { Card, SectionHeading, StatusBadge } from "@/shared/components/ui";
 import { button } from "@/styles/button";
 import { field } from "@/styles/field";
 
-const TIME_OPTIONS = Array.from({ length: 19 }, (_, index) => {
-  const totalMinutes = 9 * 60 + index * 30;
+const TIME_OPTIONS = Array.from({ length: 12 }, (_, index) => {
+  const totalMinutes = 8 * 60 + index * 60;
   const hours = String(Math.floor(totalMinutes / 60)).padStart(2, "0");
   const minutes = String(totalMinutes % 60).padStart(2, "0");
 
@@ -61,8 +61,8 @@ export function ReservationCreateForm({
       resourceId: selectedResourceId ?? "",
       title: "",
       date: selectedDate ?? "",
-      startTime: selectedStartTime ?? "09:00",
-      endTime: selectedEndTime ?? "10:00",
+        startTime: selectedStartTime ?? "08:00",
+        endTime: selectedEndTime ?? "09:00",
     },
   });
 
@@ -114,7 +114,7 @@ export function ReservationCreateForm({
         <SectionHeading
           eyebrow="예약 폼"
           title="예약 생성"
-          description="시간은 30분 단위로만 선택되도록 제한해 타임테이블과 같은 규칙으로 예약이 생성되게 맞췄습니다."
+          description="시간은 1시간 단위로만 선택되도록 제한해 타임테이블과 같은 규칙으로 예약이 생성되게 맞췄습니다."
         />
 
         <div className={scheduleInfoClassName}>

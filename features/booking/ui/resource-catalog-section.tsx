@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import type { AuthSession } from "@/features/auth/api/session";
 import { useBookableResources } from "@/features/booking/hooks/use-booking-queries";
 import { ResourceScheduleBoard } from "@/features/booking/ui/resource-schedule-board";
 import { EmptyState, SectionHeading } from "@/shared/components/ui";
 import { ui } from "@/styles/ui";
 
-export function ResourceCatalogSection() {
+export function ResourceCatalogSection({ session }: { session: AuthSession }) {
   const { data, isLoading } = useBookableResources();
 
   return (
@@ -44,6 +45,7 @@ export function ResourceCatalogSection() {
       ) : (
         <ResourceScheduleBoard
           resources={data.filter((resource) => resource.enabled)}
+          session={session}
           allowBooking
         />
       )}

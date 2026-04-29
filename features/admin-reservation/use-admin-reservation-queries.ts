@@ -36,10 +36,10 @@ export function useChangeReservationStatus() {
     }) => changeReservationStatus(reservationId, status),
     onSuccess: (reservation) => {
       queryClient.invalidateQueries({
-        queryKey: ["adminReservations"],
+        queryKey: queryKeys.adminReservationsRoot,
       });
       queryClient.invalidateQueries({
-        queryKey: ["reservationDetail", reservation.id],
+        queryKey: queryKeys.reservationDetailRoot(reservation.id),
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.myBookings(reservation.userId),

@@ -1,14 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { queryKeys } from "@/common/lib/query-keys";
 import { cn } from "@/common/lib/cn";
-import { signUp } from "@/features/auth/sign-up";
-import { toAuthenticatedSession } from "@/features/auth/session-api";
+import { useSignUpMutation } from "@/features/auth/use-auth-mutations";
 import {
   signUpFieldLabels,
   signUpSchema,
@@ -26,7 +23,7 @@ const defaultValues: SignUpValues = {
 
 export function SignUpForm() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const signUpMutation = useSignUpMutation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
@@ -41,7 +38,7 @@ export function SignUpForm() {
   const onSubmit = handleSubmit(async (values) => {
     setErrorMessage(null);
 
-    const response = await signUp(values);
+    const response = await signUpMutation.mutateAsync(values);
 
     if (!response.ok || !response.data.success || !response.data.data) {
       setErrorMessage(response.data.error?.message ?? "계정 생성에 실패했습니다.");
@@ -49,10 +46,6 @@ export function SignUpForm() {
     }
 
     const redirectTo = response.data.redirectTo ?? "/user";
-    queryClient.setQueryData(
-      queryKeys.session,
-      toAuthenticatedSession(response.data.data),
-    );
 
     startTransition(() => {
       router.replace(redirectTo);
@@ -115,8 +108,8 @@ export function SignUpForm() {
               </FormField>
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "생성 중..." : "계정 만들기"}
+            <Button type="submit" disabled={isSubmitting || signUpMutation.isPending}>
+              {isSubmitting || signUpMutation.isPending ? "생성 중..." : "계정 만들기"}
             </Button>
 
             {errorMessage ? (

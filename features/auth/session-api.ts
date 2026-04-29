@@ -43,3 +43,14 @@ export async function fetchSession(): Promise<AuthSession> {
     user: session.authenticated ? session.user : null,
   };
 }
+
+export async function logout(): Promise<{ ok: boolean; status: number }> {
+  const response = await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+
+  return {
+    ok: response.ok,
+    status: response.status,
+  };
+}

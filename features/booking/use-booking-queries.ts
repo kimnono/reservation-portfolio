@@ -79,10 +79,10 @@ export function useCreateBooking(options?: { redirectToMyReservations?: boolean 
         queryKey: queryKeys.homeOverview,
       });
       queryClient.invalidateQueries({
-        queryKey: ["adminReservations"],
+        queryKey: queryKeys.adminReservationsRoot,
       });
       queryClient.invalidateQueries({
-        queryKey: ["dailySchedule"],
+        queryKey: queryKeys.dailyScheduleRoot,
       });
 
       if (redirectToMyReservations) {
@@ -113,13 +113,13 @@ export function useCancelBooking(
         queryKey: queryKeys.myBookings(viewerUserId),
       });
       queryClient.invalidateQueries({
-        queryKey: ["reservationDetail", reservation.id],
+        queryKey: queryKeys.reservationDetailRoot(reservation.id),
       });
       queryClient.invalidateQueries({
-        queryKey: ["adminReservations"],
+        queryKey: queryKeys.adminReservationsRoot,
       });
       queryClient.invalidateQueries({
-        queryKey: ["dailySchedule"],
+        queryKey: queryKeys.dailyScheduleRoot,
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminDashboard,

@@ -23,7 +23,7 @@ export function useUpsertResource() {
     mutationFn: (payload: Omit<Resource, "id"> & { id?: string | null }) =>
       upsertResource(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["resources"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.resourcesRoot });
       queryClient.invalidateQueries({ queryKey: queryKeys.homeOverview });
       queryClient.invalidateQueries({ queryKey: queryKeys.adminDashboard });
     },
@@ -36,7 +36,7 @@ export function useToggleResource() {
   return useMutation({
     mutationFn: toggleResource,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["resources"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.resourcesRoot });
       queryClient.invalidateQueries({ queryKey: queryKeys.homeOverview });
       queryClient.invalidateQueries({ queryKey: queryKeys.adminDashboard });
     },

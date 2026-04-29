@@ -1,16 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { queryKeys } from "@/common/lib/query-keys";
 import { cn } from "@/common/lib/cn";
 import { demoAccounts } from "@/features/auth/mock";
-import { login } from "@/features/auth/login";
+import { useLoginMutation } from "@/features/auth/use-auth-mutations";
 import { getRoleLabel } from "@/features/auth/roles";
-import { toAuthenticatedSession } from "@/features/auth/session-api";
 import {
   signInSchema,
   type SignInValues,
@@ -21,7 +18,7 @@ import { SectionHeading, StatusBadge } from "@/common/components/patterns";
 
 export function SignInForm() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const loginMutation = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const {
     register,
@@ -39,17 +36,12 @@ export function SignInForm() {
   async function onSubmit(values: SignInValues) {
     setErrorMessage(null);
 
-    const response = await login(values);
+    const response = await loginMutation.mutateAsync(values);
 
     if (!response.ok || !response.data.success || !response.data.data) {
       setErrorMessage(response.data.error?.message ?? "로그인에 실패했습니다.");
       return;
     }
-
-    queryClient.setQueryData(
-      queryKeys.session,
-      toAuthenticatedSession(response.data.data),
-    );
 
     startTransition(() => {
       router.replace(response.data.redirectTo ?? "/");
@@ -145,8 +137,12 @@ export function SignInForm() {
             </p>
           ) : null}
 
-          <Button className="min-w-40" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "로그인 중..." : "로그인"}
+          <Button
+            className="min-w-40"
+            type="submit"
+            disabled={isSubmitting || loginMutation.isPending}
+          >
+            {isSubmitting || loginMutation.isPending ? "로그인 중..." : "로그인"}
           </Button>
         </form>
       </Card>

@@ -43,5 +43,4 @@ yarn-error.log*
 next-env.d.ts
 
 # localMD
-codex.md
-cssguide.md
+AGENTS.md

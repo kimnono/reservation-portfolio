@@ -1,11 +1,9 @@
 "use client";
 
-import { startTransition, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { startTransition } from "react";
 import { useRouter } from "next/navigation";
-import { queryKeys } from "@/common/lib/query-keys";
 import { cn } from "@/common/lib/cn";
-import { toUnauthenticatedSession } from "@/features/auth/session-api";
+import { useLogoutMutation } from "@/features/auth/use-auth-mutations";
 
 type SignOutButtonProps = {
   compact?: boolean;
@@ -13,24 +11,16 @@ type SignOutButtonProps = {
 
 export function SignOutButton({ compact = false }: SignOutButtonProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const [isPending, setIsPending] = useState(false);
+  const logoutMutation = useLogoutMutation();
 
   async function handleSignOut() {
-    setIsPending(true);
-
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-      });
+      await logoutMutation.mutateAsync();
     } finally {
-      queryClient.setQueryData(queryKeys.session, toUnauthenticatedSession());
-
       startTransition(() => {
         router.replace("/auth/sign-in");
         router.refresh();
       });
-      setIsPending(false);
     }
   }
 
@@ -38,7 +28,7 @@ export function SignOutButton({ compact = false }: SignOutButtonProps) {
     <button
       type="button"
       onClick={handleSignOut}
-      disabled={isPending}
+      disabled={logoutMutation.isPending}
       aria-label="로그아웃"
       title={compact ? "로그아웃" : undefined}
       className={cn(
@@ -63,7 +53,7 @@ export function SignOutButton({ compact = false }: SignOutButtonProps) {
           <path d="m16 17 5-5-5-5" />
           <path d="M21 12H9" />
         </svg>
-      ) : isPending ? (
+      ) : logoutMutation.isPending ? (
         "로그아웃 중..."
       ) : (
         "로그아웃"

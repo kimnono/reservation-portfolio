@@ -3,6 +3,9 @@ import { getDefaultPathForRole, isRole } from "@/features/auth/model/roles";
 
 const SESSION_COOKIE = "tk_session";
 const AUTH_ROUTES = new Set(["/auth/sign-in", "/auth/sign-up"]);
+const BASIC_AUTH_ENABLED = process.env.BASIC_AUTH_ENABLED === "true";
+const BASIC_AUTH_USER = process.env.BASIC_AUTH_USER ?? "";
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD ?? "";
 
 function getSessionRole(request: NextRequest) {
   const raw = request.cookies.get(SESSION_COOKIE)?.value;
@@ -27,8 +30,37 @@ function requiresAuthenticatedAccess(pathname: string) {
   );
 }
 
+function isValidBasicAuth(request: NextRequest) {
+  if (!BASIC_AUTH_ENABLED) {
+    return true;
+  }
+
+  if (!BASIC_AUTH_USER || !BASIC_AUTH_PASSWORD) {
+    return false;
+  }
+
+  const authorization = request.headers.get("authorization");
+  const expected = `Basic ${btoa(`${BASIC_AUTH_USER}:${BASIC_AUTH_PASSWORD}`)}`;
+
+  return authorization === expected;
+}
+
+function basicAuthRequired() {
+  return new NextResponse("Auth required", {
+    status: 401,
+    headers: {
+      "WWW-Authenticate": 'Basic realm="Timekeeper", charset="UTF-8"',
+    },
+  });
+}
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (!isValidBasicAuth(request)) {
+    return basicAuthRequired();
+  }
+
   const role = getSessionRole(request);
 
   if (AUTH_ROUTES.has(pathname)) {

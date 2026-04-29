@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useHomeOverview } from "@/features/booking/use-booking-queries";
 import {
   EmptyState,
@@ -10,13 +11,55 @@ import {
 } from "@/common/components/patterns";
 import { Badge, buttonClassName, Card, Skeleton } from "@/common/components/primitives";
 import { getResourceTypeLabel } from "@/common/lib/format";
-import {AuthSession} from "@/features/auth/session";
+import type { Role } from "@/features/auth/roles";
+
+type HomeSessionUser = {
+  role: Role;
+};
+
+type SessionResponse = {
+  authenticated: boolean;
+  user: HomeSessionUser | null;
+};
 
 const heroActionsClassName = "mt-9 flex flex-wrap gap-3";
 const resourceMetaClassName = "mt-2 text-sm text-muted-foreground";
 
-export function BookingHomeView({ session }: { session: AuthSession }) {
+export function BookingHomeView() {
   const { data, isLoading } = useHomeOverview();
+  const [user, setUser] = useState<HomeSessionUser | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadSession() {
+      try {
+        const response = await fetch("/api/auth/session", {
+          credentials: "same-origin",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const session = (await response.json()) as SessionResponse;
+
+        if (!ignore) {
+          setUser(session.authenticated ? session.user : null);
+        }
+      } catch {
+        if (!ignore) {
+          setUser(null);
+        }
+      }
+    }
+
+    void loadSession();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   if (isLoading || !data) {
     return (
@@ -56,7 +99,7 @@ export function BookingHomeView({ session }: { session: AuthSession }) {
                 예약 생성하기
               </Link>
 
-              {session?.user?.role === "ADMIN"
+              {user?.role === "ADMIN"
                   ? <Link
                       href="/admin"
                       className="rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold"

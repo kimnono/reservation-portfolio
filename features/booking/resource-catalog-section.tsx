@@ -7,7 +7,16 @@ import { ResourceScheduleBoard } from "@/features/booking/resource-schedule-boar
 import { EmptyState, SectionHeading } from "@/common/components/patterns";
 import { buttonClassName, Skeleton } from "@/common/components/primitives";
 
-export function ResourceCatalogSection({ session }: { session: AuthSession }) {
+const guestSession: AuthSession = {
+  status: "unauthenticated",
+  user: null,
+};
+
+export function ResourceCatalogSection({
+  session = guestSession,
+}: {
+  session?: AuthSession;
+}) {
   const { data, isLoading } = useBookableResources();
 
   return (

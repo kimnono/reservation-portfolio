@@ -37,7 +37,7 @@ export function BookingHomeView({ session }: { session: AuthSession }) {
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
       <Card className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(13,114,98,0.18),transparent_36%),linear-gradient(135deg,#ffffff_0%,#eff6f4_100%)]">
-        <StatusBadge tone="accent">예약 개요 </StatusBadge>
+        <StatusBadge tone="accent">예약 개요</StatusBadge>
         <div className="mt-7 grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
           <div>
             <h1 className="max-w-3xl text-[2.25rem] font-semibold leading-[1.16] tracking-[-0.028em] md:text-[3.15rem] md:leading-[1.1] lg:text-[4.1rem] lg:leading-[1.05]">

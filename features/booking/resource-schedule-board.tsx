@@ -119,6 +119,7 @@ function getStatusTone(status: ReservationStatus) {
     case "REJECTED":
       return "danger";
     case "CANCELED":
+    case "COMPLETED":
       return "neutral";
   }
 }

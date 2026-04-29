@@ -12,7 +12,7 @@ import { Card } from "@/common/components/primitives";
 import { EmptyState, SectionHeading, StatusBadge } from "@/common/components/patterns";
 import { formatDate, formatTimeRange, getStatusLabel } from "@/common/lib/format";
 
-const statusTabs = ["ALL", "PENDING", "APPROVED", "REJECTED", "CANCELED"] as const;
+const statusTabs = ["ALL", "PENDING", "APPROVED", "REJECTED", "CANCELED", "COMPLETED"] as const;
 
 function getStatusTone(status: string) {
   switch (status) {
@@ -23,6 +23,8 @@ function getStatusTone(status: string) {
     case "REJECTED":
     case "CANCELED":
       return "danger" as const;
+    case "COMPLETED":
+      return "neutral" as const;
     default:
       return "neutral" as const;
   }
@@ -199,7 +201,7 @@ export function AdminReservationsSection() {
                   >
                     상세 페이지
                   </Link>
-                  {(["APPROVED", "REJECTED", "CANCELED"] as const).map((status) => (
+                  {(["APPROVED", "REJECTED", "CANCELED", "COMPLETED"] as const).map((status) => (
                     <button
                       key={status}
                       type="button"

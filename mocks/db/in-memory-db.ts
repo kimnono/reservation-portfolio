@@ -157,4 +157,17 @@ export const mockReservations: Reservation[] = [
     status: "APPROVED",
     createdAt: "2026-04-03T03:20:00.000Z",
   },
+  {
+    id: "rsv-1010",
+    resourceId: "room-harbor",
+    resourceName: "Harbor Room",
+    userId: "102",
+    userName: "Minji Kim",
+    title: "Completed booking sample",
+    date: "2026-04-06",
+    startTime: "09:00",
+    endTime: "10:00",
+    status: "COMPLETED",
+    createdAt: "2026-04-01T08:00:00.000Z",
+  },
 ];

@@ -27,6 +27,8 @@ function getStatusTone(status: string) {
     case "REJECTED":
     case "CANCELED":
       return "danger" as const;
+    case "COMPLETED":
+      return "neutral" as const;
     default:
       return "neutral" as const;
   }

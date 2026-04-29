@@ -37,6 +37,8 @@ export function getStatusLabel(status: ReservationStatus) {
       return "반려";
     case "CANCELED":
       return "취소";
+    case "COMPLETED":
+      return "완료";
   }
 }
 

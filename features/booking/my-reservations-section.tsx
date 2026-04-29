@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useCancelBooking, useMyBookings } from "@/features/booking/use-booking-queries";
 import { Card, Skeleton } from "@/common/components/primitives";
 import { EmptyState, SectionHeading, StatusBadge } from "@/common/components/patterns";
@@ -25,11 +27,18 @@ function getStatusTone(status: string) {
 }
 
 export function MyReservationsSection() {
+  const router = useRouter();
   const { data: session, isLoading: isSessionLoading } = useSessionQuery();
   const userId = String(session?.user?.userId ?? "");
   const userRole = session?.user?.role === "ADMIN" ? "ADMIN" : "USER";
   const { data, isLoading } = useMyBookings(userId);
   const cancelMutation = useCancelBooking(userId, userRole);
+
+  useEffect(() => {
+    if (!isSessionLoading && !session?.user) {
+      router.replace("/auth/sign-in");
+    }
+  }, [isSessionLoading, router, session?.user]);
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-10">

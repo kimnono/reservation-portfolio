@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useCancelBooking, useBookingDetail } from "@/features/booking/use-booking-queries";
 import { Button, Card, Skeleton } from "@/common/components/primitives";
 import { SectionHeading, StatusBadge } from "@/common/components/patterns";
@@ -34,6 +36,7 @@ export function ReservationDetailSection({
   reservationId,
   viewerRole: forcedViewerRole,
 }: ReservationDetailSectionProps) {
+  const router = useRouter();
   const { data: session, isLoading: isSessionLoading } = useSessionQuery();
   const viewerUserId = String(session?.user?.userId ?? "");
   const viewerRole = forcedViewerRole ?? (session?.user?.role === "ADMIN" ? "ADMIN" : "USER");
@@ -43,6 +46,12 @@ export function ReservationDetailSection({
     viewerRole,
   );
   const cancelMutation = useCancelBooking(viewerUserId, viewerRole);
+
+  useEffect(() => {
+    if (!isSessionLoading && !session?.user) {
+      router.replace("/auth/sign-in");
+    }
+  }, [isSessionLoading, router, session?.user]);
 
   if (isSessionLoading || isLoading || !data) {
     return (

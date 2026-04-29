@@ -24,14 +24,6 @@ function getSessionRole(request: NextRequest) {
   }
 }
 
-function requiresAuthenticatedAccess(pathname: string) {
-  return (
-    pathname === "/my-reservations" ||
-    pathname === "/reservations/new" ||
-    /^\/reservations\/[^/]+$/.test(pathname)
-  );
-}
-
 function isValidBasicAuth(request: NextRequest) {
   if (!BASIC_AUTH_ENABLED) {
     return true;
@@ -91,10 +83,6 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/reservations", request.url));
   }
 
-  if (requiresAuthenticatedAccess(pathname) && !role) {
-    return NextResponse.redirect(new URL("/auth/sign-in", request.url));
-  }
-
   return NextResponse.next();
 }
 
@@ -103,9 +91,6 @@ export const config = {
     "/admin/:path*",
     "/auth/sign-in",
     "/auth/sign-up",
-    "/my-reservations",
-    "/reservations/new",
-    "/reservations/:reservationId",
     "/user",
   ],
 };

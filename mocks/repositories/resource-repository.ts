@@ -1,4 +1,4 @@
-import type { Resource } from "@/entities/resource/types";
+import type { Resource } from "@/entities/resource";
 import { mockResources } from "@/mocks/db/in-memory-db";
 
 export function listResources() {

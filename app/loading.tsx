@@ -1,4 +1,4 @@
-import { ui } from "@/styles/ui";
+import { Skeleton } from "@/common/components/primitives";
 
 export default function Loading() {
   return (
@@ -7,9 +7,9 @@ export default function Loading() {
         <div className="h-4 w-32 animate-pulse rounded-full bg-surface-muted" />
         <div className="mt-4 h-12 w-72 animate-pulse rounded-full bg-surface-muted" />
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          <div className={`h-40 ${ui.skeletonBlock}`} />
-          <div className={`h-40 ${ui.skeletonBlock}`} />
-          <div className={`h-40 ${ui.skeletonBlock}`} />
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
         </div>
       </div>
     </main>

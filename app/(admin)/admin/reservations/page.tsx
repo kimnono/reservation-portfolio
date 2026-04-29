@@ -1,4 +1,4 @@
-import { AdminReservationsSection } from "@/features/admin-reservation/ui/admin-reservations-section";
+import { AdminReservationsSection } from "@/features/admin-reservation/admin-reservations-section";
 
 export default function AdminReservationsPage() {
   return <AdminReservationsSection />;

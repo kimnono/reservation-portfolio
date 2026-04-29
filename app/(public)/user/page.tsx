@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { requireRole } from "@/features/auth/api/session";
-import { Card, SectionHeading, StatusBadge } from "@/shared/components/ui";
+import { requireRole } from "@/features/auth/session";
+import { Card } from "@/common/components/primitives";
+import { SectionHeading, StatusBadge } from "@/common/components/patterns";
 
 export default async function UserPage() {
   const session = await requireRole(["USER", "ADMIN"]);

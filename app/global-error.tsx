@@ -1,7 +1,6 @@
 "use client";
 
-import { Card } from "@/shared/components/ui";
-import { ui } from "@/styles/ui";
+import { Button, Card } from "@/common/components/primitives";
 
 type GlobalErrorProps = {
   error: Error & { digest?: string };
@@ -23,13 +22,12 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
               {error.message}
             </p>
-            <button
-              type="button"
+            <Button
               onClick={reset}
-              className={`mt-8 inline-flex ${ui.primaryAction}`}
+              className="mt-8"
             >
               다시 시도
-            </button>
+            </Button>
           </Card>
         </main>
       </body>

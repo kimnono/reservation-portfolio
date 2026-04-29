@@ -1,5 +1,5 @@
-import { requireRole } from "@/features/auth/api/session";
-import { ReservationDetailSection } from "@/features/booking/ui/reservation-detail-section";
+import { requireRole } from "@/features/auth/session";
+import { ReservationDetailSection } from "@/features/booking/reservation-detail-section";
 
 export default async function AdminReservationDetailPage(
   props: {

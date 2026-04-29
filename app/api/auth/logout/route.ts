@@ -1,4 +1,4 @@
-import { clearSession } from "@/features/auth/api/session";
+import { clearSession } from "@/features/auth/session";
 
 export async function POST() {
   await clearSession();

@@ -1,5 +1,5 @@
-import { requireRole } from "@/features/auth/api/session";
-import { ReservationCreateForm } from "@/features/booking/ui/reservation-create-form";
+import { requireRole } from "@/features/auth/session";
+import { ReservationCreateForm } from "@/features/booking/reservation-create-form";
 
 export default async function NewReservationPage(
   props: {

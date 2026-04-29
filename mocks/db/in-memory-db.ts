@@ -1,5 +1,5 @@
-import type { Reservation } from "@/entities/reservation/types";
-import type { Resource } from "@/entities/resource/types";
+import type { Reservation } from "@/entities/reservation";
+import type { Resource } from "@/entities/resource";
 
 export const mockResources: Resource[] = [
   {

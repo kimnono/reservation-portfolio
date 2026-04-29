@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { publicNavigation } from "@/common/config/navigation";
-import { getSession } from "@/features/auth/api/session";
-import { getRoleLabel } from "@/features/auth/model/roles";
-import { SignOutButton } from "@/features/auth/ui/sign-out-button";
-import { cn } from "@/common/utils/cn";
+import { getSession } from "@/features/auth/session";
+import { getRoleLabel } from "@/features/auth/roles";
+import { SignOutButton } from "@/features/auth/sign-out-button";
+import { cn } from "@/common/lib/cn";
 
 export default async function PublicLayout({
   children,

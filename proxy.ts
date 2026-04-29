@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getDefaultPathForRole, isRole } from "@/features/auth/model/roles";
+import { getDefaultPathForRole, isRole } from "@/features/auth/roles";
 
 const SESSION_COOKIE = "tk_session";
 const AUTH_ROUTES = new Set(["/auth/sign-in", "/auth/sign-up"]);

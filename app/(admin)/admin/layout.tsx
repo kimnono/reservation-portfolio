@@ -1,5 +1,5 @@
-import { requireRole } from "@/features/auth/api/session";
-import { AdminShell } from "@/features/admin-layout/ui/admin-shell";
+import { requireRole } from "@/features/auth/session";
+import { AdminShell } from "@/features/admin-layout/admin-shell";
 
 export default async function AdminLayout({
   children,

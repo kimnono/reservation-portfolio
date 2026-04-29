@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { SignInForm } from "@/features/auth/ui/sign-in-form";
-import { getSession } from "@/features/auth/api/session";
-import { getDefaultPathForRole } from "@/features/auth/model/roles";
+import { SignInForm } from "@/features/auth/sign-in-form";
+import { getSession } from "@/features/auth/session";
+import { getDefaultPathForRole } from "@/features/auth/roles";
 
 export default async function SignInPage() {
   const session = await getSession();

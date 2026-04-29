@@ -1,9 +1,9 @@
 import {
   createSession,
   getSessionRedirectPath,
-} from "@/features/auth/api/session";
-import { registerMockUser } from "@/features/auth/api/mock";
-import type { AuthResponseBody, SignUpRequest } from "@/features/auth/model/types";
+} from "@/features/auth/session";
+import { registerMockUser } from "@/features/auth/mock";
+import type { AuthResponseBody, SignUpRequest } from "@/features/auth/types";
 
 function toErrorBody(message: string): AuthResponseBody {
   return {

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Card, SectionHeading, StatusBadge } from "@/shared/components/ui";
+import { Card } from "@/common/components/primitives";
+import { SectionHeading, StatusBadge } from "@/common/components/patterns";
 
 export default function AdminUsersPage() {
   return (

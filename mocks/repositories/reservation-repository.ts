@@ -3,7 +3,7 @@ import type {
   Reservation,
   ReservationListResult,
   ReservationStatus,
-} from "@/entities/reservation/types";
+} from "@/entities/reservation";
 import { mockReservations } from "@/mocks/db/in-memory-db";
 import { findResourceById } from "@/mocks/repositories/resource-repository";
 

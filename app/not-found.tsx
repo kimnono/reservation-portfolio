@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Card } from "@/shared/components/ui";
-import { ui } from "@/styles/ui";
+import { buttonClassName, Card } from "@/common/components/primitives";
 
 export default function NotFound() {
   return (
@@ -17,7 +16,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className={`mt-8 inline-flex ${ui.primaryAction}`}
+          className={buttonClassName({ className: "mt-8" })}
         >
           첫 화면으로 이동
         </Link>

@@ -97,13 +97,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/user",
-    "/my-reservations",
-    "/reservations/new",
-    "/reservations/:path*",
-    "/auth/sign-in",
-    "/auth/sign-up",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

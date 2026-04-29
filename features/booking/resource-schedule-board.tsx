@@ -5,6 +5,8 @@ import { cn } from "@/common/lib/cn";
 import type { Resource } from "@/entities/resource";
 import type { Reservation, ReservationStatus } from "@/entities/reservation";
 import type { AuthSession } from "@/features/auth/session";
+import { toUnauthenticatedSession } from "@/features/auth/session-api";
+import { useSessionQuery } from "@/features/auth/use-session-query";
 import { useDailySchedule } from "@/features/booking/use-booking-queries";
 import { ReservationCreateDialog } from "@/features/booking/reservation-create-dialog";
 import { ReservationTimelineCard } from "@/features/booking/reservation-timeline-card";
@@ -36,7 +38,7 @@ const timelineBoundaryHeaderClassName =
 
 type ResourceScheduleBoardProps = {
   resources: Resource[];
-  session: AuthSession;
+  session?: AuthSession;
   allowBooking?: boolean;
 };
 
@@ -343,6 +345,8 @@ export function ResourceScheduleBoard({
   session,
   allowBooking = false,
 }: ResourceScheduleBoardProps) {
+  const { data: cachedSession } = useSessionQuery();
+  const activeSession = session ?? cachedSession ?? toUnauthenticatedSession();
   const [selectedDate, setSelectedDate] = useState(getDefaultScheduleDate);
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const [expandedResourceId, setExpandedResourceId] = useState<string | null>(null);
@@ -549,7 +553,7 @@ export function ResourceScheduleBoard({
 
       <ReservationCreateDialog
         open={selectedSlot !== null}
-        session={session}
+        session={activeSession}
         resource={selectedSlot?.resource ?? null}
         selectedDate={selectedSlot?.date ?? selectedDate}
         selectedStartTime={selectedSlot?.startTime ?? "08:00"}

@@ -1,58 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { publicNavigation } from "@/common/config/navigation";
 import { cn } from "@/common/lib/cn";
-import { getRoleLabel, type Role } from "@/features/auth/roles";
+import { getRoleLabel } from "@/features/auth/roles";
 import { SignOutButton } from "@/features/auth/sign-out-button";
-
-type PublicSessionUser = {
-  userId: number;
-  name: string;
-  email: string;
-  role: Role;
-};
-
-type SessionResponse = {
-  authenticated: boolean;
-  user: PublicSessionUser | null;
-};
+import { useSessionQuery } from "@/features/auth/use-session-query";
 
 export function PublicSessionNav() {
-  const [user, setUser] = useState<PublicSessionUser | null>(null);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadSession() {
-      try {
-        const response = await fetch("/api/auth/session", {
-          credentials: "same-origin",
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const session = (await response.json()) as SessionResponse;
-
-        if (!ignore) {
-          setUser(session.authenticated ? session.user : null);
-        }
-      } catch {
-        if (!ignore) {
-          setUser(null);
-        }
-      }
-    }
-
-    void loadSession();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const { data: session } = useSessionQuery();
+  const user = session?.user ?? null;
 
   const navigationItems = user
     ? publicNavigation.filter((item) => item.href !== "/auth/sign-in")

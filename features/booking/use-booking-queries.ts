@@ -38,6 +38,7 @@ export function useMyBookings(userId: string) {
   return useQuery({
     queryKey: queryKeys.myBookings(userId),
     queryFn: () => getMyBookings(userId),
+    enabled: Boolean(userId),
   });
 }
 
@@ -56,6 +57,7 @@ export function useBookingDetail(
         userId: viewerUserId,
         role: viewerRole,
       }),
+    enabled: Boolean(viewerUserId),
   });
 }
 

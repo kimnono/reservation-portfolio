@@ -1,11 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { queryKeys } from "@/common/lib/query-keys";
 import { cn } from "@/common/lib/cn";
 import { signUp } from "@/features/auth/sign-up";
+import { toAuthenticatedSession } from "@/features/auth/session-api";
 import {
   signUpFieldLabels,
   signUpSchema,
@@ -23,6 +26,7 @@ const defaultValues: SignUpValues = {
 
 export function SignUpForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
@@ -45,6 +49,10 @@ export function SignUpForm() {
     }
 
     const redirectTo = response.data.redirectTo ?? "/user";
+    queryClient.setQueryData(
+      queryKeys.session,
+      toAuthenticatedSession(response.data.data),
+    );
 
     startTransition(() => {
       router.replace(redirectTo);

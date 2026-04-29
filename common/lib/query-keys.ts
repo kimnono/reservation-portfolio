@@ -1,4 +1,5 @@
 export const queryKeys = {
+  session: ["session"] as const,
   homeOverview: ["homeOverview"] as const,
   resources: (scope: string) => ["resources", scope] as const,
   dailySchedule: (date: string) => ["dailySchedule", date] as const,

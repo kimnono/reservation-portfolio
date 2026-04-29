@@ -1,22 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import type { AuthSession } from "@/features/auth/session";
 import { useBookableResources } from "@/features/booking/use-booking-queries";
 import { ResourceScheduleBoard } from "@/features/booking/resource-schedule-board";
 import { EmptyState, SectionHeading } from "@/common/components/patterns";
 import { buttonClassName, Skeleton } from "@/common/components/primitives";
 
-const guestSession: AuthSession = {
-  status: "unauthenticated",
-  user: null,
-};
-
-export function ResourceCatalogSection({
-  session = guestSession,
-}: {
-  session?: AuthSession;
-}) {
+export function ResourceCatalogSection() {
   const { data, isLoading } = useBookableResources();
 
   return (
@@ -54,7 +44,6 @@ export function ResourceCatalogSection({
       ) : (
         <ResourceScheduleBoard
           resources={data.filter((resource) => resource.enabled)}
-          session={session}
           allowBooking
         />
       )}

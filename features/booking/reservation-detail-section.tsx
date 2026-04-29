@@ -3,6 +3,7 @@
 import { useCancelBooking, useBookingDetail } from "@/features/booking/use-booking-queries";
 import { Button, Card, Skeleton } from "@/common/components/primitives";
 import { SectionHeading, StatusBadge } from "@/common/components/patterns";
+import { useSessionQuery } from "@/features/auth/use-session-query";
 import {
   formatDate,
   formatDateTime,
@@ -12,8 +13,7 @@ import {
 
 type ReservationDetailSectionProps = {
   reservationId: string;
-  viewerUserId: string;
-  viewerRole: "USER" | "ADMIN";
+  viewerRole?: "USER" | "ADMIN";
 };
 
 function getStatusTone(status: string) {
@@ -32,9 +32,11 @@ function getStatusTone(status: string) {
 
 export function ReservationDetailSection({
   reservationId,
-  viewerUserId,
-  viewerRole,
+  viewerRole: forcedViewerRole,
 }: ReservationDetailSectionProps) {
+  const { data: session, isLoading: isSessionLoading } = useSessionQuery();
+  const viewerUserId = String(session?.user?.userId ?? "");
+  const viewerRole = forcedViewerRole ?? (session?.user?.role === "ADMIN" ? "ADMIN" : "USER");
   const { data, isLoading } = useBookingDetail(
     reservationId,
     viewerUserId,
@@ -42,7 +44,7 @@ export function ReservationDetailSection({
   );
   const cancelMutation = useCancelBooking(viewerUserId, viewerRole);
 
-  if (isLoading || !data) {
+  if (isSessionLoading || isLoading || !data) {
     return (
       <section className="mx-auto max-w-4xl px-6 py-10">
         <Skeleton className="h-80" />

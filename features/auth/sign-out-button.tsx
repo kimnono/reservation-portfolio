@@ -1,8 +1,11 @@
 "use client";
 
 import { startTransition, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { queryKeys } from "@/common/lib/query-keys";
 import { cn } from "@/common/lib/cn";
+import { toUnauthenticatedSession } from "@/features/auth/session-api";
 
 type SignOutButtonProps = {
   compact?: boolean;
@@ -10,6 +13,7 @@ type SignOutButtonProps = {
 
 export function SignOutButton({ compact = false }: SignOutButtonProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isPending, setIsPending] = useState(false);
 
   async function handleSignOut() {
@@ -20,6 +24,8 @@ export function SignOutButton({ compact = false }: SignOutButtonProps) {
         method: "POST",
       });
     } finally {
+      queryClient.setQueryData(queryKeys.session, toUnauthenticatedSession());
+
       startTransition(() => {
         router.replace("/auth/sign-in");
         router.refresh();

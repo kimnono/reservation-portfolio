@@ -1,11 +1,10 @@
 "use client";
 
-import type { AuthSession } from "@/features/auth/session";
 import { ResourceScheduleBoard } from "@/features/booking/resource-schedule-board";
 import { useResources } from "@/features/resource/use-resource-queries";
 import { EmptyState, SectionHeading } from "@/common/components/patterns";
 
-export function AdminScheduleSection({ session }: { session: AuthSession }) {
+export function AdminScheduleSection() {
   const { data, isLoading } = useResources("admin");
 
   return (
@@ -33,7 +32,7 @@ export function AdminScheduleSection({ session }: { session: AuthSession }) {
           />
         </div>
       ) : (
-        <ResourceScheduleBoard resources={data} session={session} />
+        <ResourceScheduleBoard resources={data} />
       )}
     </section>
   );

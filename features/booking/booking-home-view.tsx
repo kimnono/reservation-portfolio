@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useHomeOverview } from "@/features/booking/use-booking-queries";
 import {
   EmptyState,
@@ -11,55 +10,15 @@ import {
 } from "@/common/components/patterns";
 import { Badge, buttonClassName, Card, Skeleton } from "@/common/components/primitives";
 import { getResourceTypeLabel } from "@/common/lib/format";
-import type { Role } from "@/features/auth/roles";
-
-type HomeSessionUser = {
-  role: Role;
-};
-
-type SessionResponse = {
-  authenticated: boolean;
-  user: HomeSessionUser | null;
-};
+import { useSessionQuery } from "@/features/auth/use-session-query";
 
 const heroActionsClassName = "mt-9 flex flex-wrap gap-3";
 const resourceMetaClassName = "mt-2 text-sm text-muted-foreground";
 
 export function BookingHomeView() {
   const { data, isLoading } = useHomeOverview();
-  const [user, setUser] = useState<HomeSessionUser | null>(null);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadSession() {
-      try {
-        const response = await fetch("/api/auth/session", {
-          credentials: "same-origin",
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const session = (await response.json()) as SessionResponse;
-
-        if (!ignore) {
-          setUser(session.authenticated ? session.user : null);
-        }
-      } catch {
-        if (!ignore) {
-          setUser(null);
-        }
-      }
-    }
-
-    void loadSession();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const { data: session } = useSessionQuery();
+  const user = session?.user ?? null;
 
   if (isLoading || !data) {
     return (

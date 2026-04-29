@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { cn } from "@/common/lib/cn";
-import type { AuthSession } from "@/features/auth/session";
 import { getRoleLabel } from "@/features/auth/roles";
+import { toUnauthenticatedSession } from "@/features/auth/session-api";
+import { useSessionQuery } from "@/features/auth/use-session-query";
 import {
   reservationFormSchema,
   type ReservationFormValues,
@@ -32,7 +33,6 @@ const submitPanelClassName =
 const timeFieldGridClassName = "grid grid-cols-2 gap-4";
 
 type ReservationCreateFormProps = {
-  session: AuthSession;
   selectedResourceId?: string;
   selectedDate?: string;
   selectedStartTime?: string;
@@ -40,12 +40,13 @@ type ReservationCreateFormProps = {
 };
 
 export function ReservationCreateForm({
-  session,
   selectedResourceId,
   selectedDate,
   selectedStartTime,
   selectedEndTime,
 }: ReservationCreateFormProps) {
+  const { data: session } = useSessionQuery();
+  const activeSession = session ?? toUnauthenticatedSession();
   const { data: resources } = useBookableResources();
   const createBookingMutation = useCreateBooking();
   const {
@@ -96,14 +97,14 @@ export function ReservationCreateForm({
   }, [endTimeOptions, selectedEnd, selectedStart, setValue]);
 
   async function onSubmit(values: ReservationFormValues) {
-    if (!session.user) {
+    if (!activeSession.user) {
       return;
     }
 
     await createBookingMutation.mutateAsync({
       ...values,
-      userId: String(session.user.userId),
-      userName: session.user.name,
+      userId: String(activeSession.user.userId),
+      userName: activeSession.user.name,
     });
   }
 
@@ -120,7 +121,7 @@ export function ReservationCreateForm({
           현재 로그인
           <span className="font-semibold text-foreground">
             {" "}
-            {session.user?.name} / {session.user ? getRoleLabel(session.user.role) : "게스트"}
+            {activeSession.user?.name} / {activeSession.user ? getRoleLabel(activeSession.user.role) : "게스트"}
           </span>
         </div>
 

@@ -5,7 +5,7 @@ import { useCancelBooking, useMyBookings } from "@/features/booking/use-booking-
 import { Card, Skeleton } from "@/common/components/primitives";
 import { EmptyState, SectionHeading, StatusBadge } from "@/common/components/patterns";
 import { formatDate, formatTimeRange, getStatusLabel } from "@/common/lib/format";
-import type { AuthSession } from "@/features/auth/session";
+import { useSessionQuery } from "@/features/auth/use-session-query";
 
 const reservationActionsClassName = "flex flex-wrap gap-3";
 const reservationMetaClassName = "mt-2 text-sm text-muted-foreground";
@@ -24,9 +24,10 @@ function getStatusTone(status: string) {
   }
 }
 
-export function MyReservationsSection({ session }: { session: AuthSession }) {
-  const userId = String(session.user?.userId ?? "");
-  const userRole = session.user?.role === "ADMIN" ? "ADMIN" : "USER";
+export function MyReservationsSection() {
+  const { data: session, isLoading: isSessionLoading } = useSessionQuery();
+  const userId = String(session?.user?.userId ?? "");
+  const userRole = session?.user?.role === "ADMIN" ? "ADMIN" : "USER";
   const { data, isLoading } = useMyBookings(userId);
   const cancelMutation = useCancelBooking(userId, userRole);
 
@@ -38,7 +39,7 @@ export function MyReservationsSection({ session }: { session: AuthSession }) {
         description="사용자 전용 화면에서는 본인 예약 조회와 취소에 집중하고, 관리자 화면의 검색과 정렬 기능은 분리했습니다."
       />
 
-      {isLoading ? (
+      {isSessionLoading || isLoading ? (
         <div className="mt-6 grid gap-4">
           {Array.from({ length: 3 }).map((_, index) => (
             <Skeleton

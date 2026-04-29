@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { adminNavigation } from "@/common/config/navigation";
 import { SignOutButton } from "@/features/auth/sign-out-button";
+import { useSessionQuery } from "@/features/auth/use-session-query";
 import { cn } from "@/common/lib/cn";
 import { AdminSideNav } from "@/features/admin-layout/admin-side-nav";
 
@@ -41,6 +42,7 @@ function getAdminShellPreferenceServerSnapshot() {
 }
 
 export function AdminShell({ children, userName }: AdminShellProps) {
+  const { data: session } = useSessionQuery();
   const pathname = usePathname();
   const isCompact = useSyncExternalStore(
     subscribeToAdminShellPreference,
@@ -134,7 +136,7 @@ export function AdminShell({ children, userName }: AdminShellProps) {
                 {isCompact ? "TK" : "Timekeeper"}
               </h1>
               <p className={cn("mt-2 text-sm text-white/62", isCompact && "lg:hidden")}>
-                {userName}
+                {userName ?? session?.user?.name}
               </p>
             </div>
 

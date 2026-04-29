@@ -2,15 +2,17 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getDefaultPathForRole, isRole } from "@/features/auth/roles";
 
 const SESSION_COOKIE = "tk_session";
+const ACCESS_TOKEN_COOKIE = "tk_access_token";
 const AUTH_ROUTES = new Set(["/auth/sign-in", "/auth/sign-up"]);
 const BASIC_AUTH_ENABLED = process.env.BASIC_AUTH_ENABLED === "true";
 const BASIC_AUTH_USER = process.env.BASIC_AUTH_USER ?? "";
 const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD ?? "";
 
 function getSessionRole(request: NextRequest) {
+  const token = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const raw = request.cookies.get(SESSION_COOKIE)?.value;
 
-  if (!raw) {
+  if (!token || !raw) {
     return null;
   }
 

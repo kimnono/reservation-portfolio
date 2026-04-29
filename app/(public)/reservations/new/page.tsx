@@ -1,4 +1,3 @@
-import { requireRole } from "@/features/auth/session";
 import { ReservationCreateForm } from "@/features/booking/reservation-create-form";
 
 export default async function NewReservationPage(
@@ -11,7 +10,6 @@ export default async function NewReservationPage(
     }>;
   },
 ) {
-  const session = await requireRole(["USER", "ADMIN"]);
   const searchParams = await props.searchParams;
   const selectedResourceId =
     typeof searchParams.resourceId === "string" ? searchParams.resourceId : undefined;
@@ -24,7 +22,6 @@ export default async function NewReservationPage(
 
   return (
     <ReservationCreateForm
-      session={session}
       selectedResourceId={selectedResourceId}
       selectedDate={selectedDate}
       selectedStartTime={selectedStartTime}

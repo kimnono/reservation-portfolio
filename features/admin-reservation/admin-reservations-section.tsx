@@ -1,14 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import type { AdminReservationFilter, ReservationStatus } from "@/entities/reservation";
+import { FormField } from "@/common/components/forms";
+import { cn } from "@/common/lib/cn";
 import { useAdminReservationUIStore } from "@/features/admin-reservation/admin-reservation-ui-store";
+import {
+  rejectReservationSchema,
+  type RejectReservationFormValues,
+} from "@/features/admin-reservation/reject-reservation-schema";
 import {
   useAdminReservations,
   useChangeReservationStatus,
 } from "@/features/admin-reservation/use-admin-reservation-queries";
-import { Card } from "@/common/components/primitives";
+import { Button, Card, Textarea } from "@/common/components/primitives";
 import { EmptyState, SectionHeading, StatusBadge } from "@/common/components/patterns";
 import { formatDate, formatTimeRange, getStatusLabel } from "@/common/lib/format";
 
@@ -30,9 +38,76 @@ function getStatusTone(status: string) {
   }
 }
 
+type RejectReservationFormProps = {
+  isPending: boolean;
+  onCancel: () => void;
+  onSubmit: (rejectReason: string) => Promise<void>;
+};
+
+function RejectReservationForm({
+  isPending,
+  onCancel,
+  onSubmit,
+}: RejectReservationFormProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RejectReservationFormValues>({
+    resolver: zodResolver(rejectReservationSchema),
+    defaultValues: {
+      rejectReason: "",
+    },
+  });
+
+  async function handleValidSubmit(values: RejectReservationFormValues) {
+    await onSubmit(values.rejectReason);
+    reset();
+  }
+
+  function handleCancel() {
+    reset();
+    onCancel();
+  }
+
+  return (
+    <form
+      className="mt-5 rounded-[22px] border border-danger/20 bg-rose-50/70 p-4"
+      onSubmit={handleSubmit(handleValidSubmit)}
+    >
+      <FormField label="거절 사유" error={errors.rejectReason?.message}>
+        <Textarea
+          {...register("rejectReason")}
+          className={cn(errors.rejectReason && "border-danger")}
+          placeholder="예약을 거절하는 이유를 입력해주세요."
+        />
+      </FormField>
+      <div className="mt-4 flex flex-wrap justify-end gap-2">
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
+        >
+          취소
+        </button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "처리 중..." : "거절 확정"}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
 export function AdminReservationsSection() {
-  const { isFilterOpen, toggleFilterOpen, selectedReservationId, setSelectedReservationId } =
-    useAdminReservationUIStore();
+  const {
+    isFilterOpen,
+    toggleFilterOpen,
+    selectedReservationId,
+    setSelectedReservationId,
+    rejectingReservationId,
+    setRejectingReservationId,
+  } = useAdminReservationUIStore();
   const [filters, setFilters] = useState<AdminReservationFilter>({
     status: "ALL",
     sortBy: "createdAt",
@@ -206,12 +281,22 @@ export function AdminReservationsSection() {
                       key={status}
                       type="button"
                       disabled={changeStatusMutation.isPending}
-                      onClick={() =>
+                      onClick={() => {
+                        if (status === "REJECTED") {
+                          setRejectingReservationId(
+                            rejectingReservationId === reservation.id
+                              ? null
+                              : reservation.id,
+                          );
+                          return;
+                        }
+
+                        setRejectingReservationId(null);
                         changeStatusMutation.mutate({
                           reservationId: reservation.id,
                           status: status as Exclude<ReservationStatus, "PENDING">,
-                        })
-                      }
+                        });
+                      }}
                       className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-60"
                     >
                       {getStatusLabel(status)}
@@ -220,10 +305,28 @@ export function AdminReservationsSection() {
                 </div>
               </div>
 
+              {rejectingReservationId === reservation.id ? (
+                <RejectReservationForm
+                  isPending={changeStatusMutation.isPending}
+                  onCancel={() => setRejectingReservationId(null)}
+                  onSubmit={async (rejectReason) => {
+                    await changeStatusMutation.mutateAsync({
+                      reservationId: reservation.id,
+                      status: "REJECTED",
+                      rejectReason,
+                    });
+                    setRejectingReservationId(null);
+                  }}
+                />
+              ) : null}
+
               {selectedReservationId === reservation.id ? (
                 <div className="mt-6 rounded-[22px] bg-surface-muted/70 p-4 text-sm text-muted-foreground">
                   <p>예약 ID: {reservation.id}</p>
                   <p className="mt-2">예약일: {formatDate(reservation.date)}</p>
+                  {reservation.rejectReason ? (
+                    <p className="mt-2 text-danger">거절 사유: {reservation.rejectReason}</p>
+                  ) : null}
                   <p className="mt-2">
                     조건이 바뀌면 query key가 분리되어 목록 캐시도 함께 갱신됩니다.
                   </p>

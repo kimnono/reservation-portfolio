@@ -31,8 +31,11 @@ export async function getAdminDashboardSummary() {
 
 export async function changeReservationStatus(
   reservationId: string,
-  status: Exclude<ReservationStatus, "PENDING">,
+  payload: {
+    status: Exclude<ReservationStatus, "PENDING">;
+    rejectReason?: string;
+  },
 ) {
   await mockDelay();
-  return updateReservationStatus(reservationId, status);
+  return updateReservationStatus(reservationId, payload);
 }

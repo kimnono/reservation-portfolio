@@ -100,6 +100,13 @@ export function ReservationDetailSection({
           </div>
         </dl>
 
+        {data.rejectReason ? (
+          <div className="mt-6 rounded-[22px] border border-danger/20 bg-rose-50/70 p-4">
+            <p className="text-sm font-semibold text-danger">거절 사유</p>
+            <p className="mt-2 text-sm text-muted-foreground">{data.rejectReason}</p>
+          </div>
+        ) : null}
+
         <div className="mt-8">
           <Button
             type="button"

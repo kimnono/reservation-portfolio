@@ -90,6 +90,7 @@ export const mockReservations: Reservation[] = [
     startTime: "16:00",
     endTime: "17:30",
     status: "REJECTED",
+    rejectReason: "Requested time overlaps with a priority interview schedule.",
     createdAt: "2026-04-02T10:45:00.000Z",
   },
   {

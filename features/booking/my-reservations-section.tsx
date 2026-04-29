@@ -93,6 +93,11 @@ export function MyReservationsSection() {
                   <p className={reservationMetaClassName}>
                     {reservation.resourceName}
                   </p>
+                  {reservation.rejectReason ? (
+                    <p className="mt-2 text-sm text-danger">
+                      거절 사유: {reservation.rejectReason}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className={reservationActionsClassName}>

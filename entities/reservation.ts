@@ -16,6 +16,7 @@ export type Reservation = {
   startTime: string;
   endTime: string;
   status: ReservationStatus;
+  rejectReason?: string;
   createdAt: string;
 };
 

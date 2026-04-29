@@ -96,6 +96,11 @@ export function AdminDashboardSection() {
                   {formatDate(reservation.date)} /{" "}
                   {formatTimeRange(reservation.startTime, reservation.endTime)}
                 </p>
+                {reservation.rejectReason ? (
+                  <p className="mt-2 text-sm text-danger">
+                    거절 사유: {reservation.rejectReason}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>

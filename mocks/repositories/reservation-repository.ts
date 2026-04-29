@@ -164,7 +164,10 @@ export function createReservation(payload: {
 
 export function updateReservationStatus(
   reservationId: string,
-  status: Exclude<ReservationStatus, "PENDING">,
+  payload: {
+    status: Exclude<ReservationStatus, "PENDING">;
+    rejectReason?: string;
+  },
 ) {
   const target = findReservationById(reservationId);
 
@@ -172,10 +175,17 @@ export function updateReservationStatus(
     throw new Error("변경할 예약을 찾지 못했습니다.");
   }
 
-  target.status = status;
+  target.status = payload.status;
+
+  if (payload.status === "REJECTED") {
+    target.rejectReason = payload.rejectReason?.trim();
+  } else {
+    delete target.rejectReason;
+  }
+
   return target;
 }
 
 export function cancelReservation(reservationId: string) {
-  return updateReservationStatus(reservationId, "CANCELED");
+  return updateReservationStatus(reservationId, { status: "CANCELED" });
 }

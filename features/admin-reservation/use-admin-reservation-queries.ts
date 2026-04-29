@@ -30,10 +30,12 @@ export function useChangeReservationStatus() {
     mutationFn: ({
       reservationId,
       status,
+      rejectReason,
     }: {
       reservationId: string;
       status: Exclude<ReservationStatus, "PENDING">;
-    }) => changeReservationStatus(reservationId, status),
+      rejectReason?: string;
+    }) => changeReservationStatus(reservationId, { status, rejectReason }),
     onSuccess: (reservation) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.adminReservationsRoot,

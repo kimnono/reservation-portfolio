@@ -347,6 +347,7 @@ export function ResourceScheduleBoard({
 }: ResourceScheduleBoardProps) {
   const { data: cachedSession } = useSessionQuery();
   const activeSession = session ?? cachedSession ?? toUnauthenticatedSession();
+  const canBook = allowBooking && activeSession.status === "authenticated";
   const [selectedDate, setSelectedDate] = useState(getDefaultScheduleDate);
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const [expandedResourceId, setExpandedResourceId] = useState<string | null>(null);
@@ -510,7 +511,7 @@ export function ResourceScheduleBoard({
                           timelineBlocks={approvedTimelineBlocks}
                           laneCount={approvedLaneCount}
                           variant="approved"
-                          allowBooking={allowBooking}
+                          allowBooking={canBook}
                           onSelectSlot={setSelectedSlot}
                         />
                       </div>

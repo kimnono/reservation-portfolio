@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { cn } from "@/common/lib/cn";
@@ -45,7 +46,8 @@ export function ReservationCreateForm({
   selectedStartTime,
   selectedEndTime,
 }: ReservationCreateFormProps) {
-  const { data: session } = useSessionQuery();
+  const router = useRouter();
+  const { data: session, isLoading: isSessionLoading } = useSessionQuery();
   const activeSession = session ?? toUnauthenticatedSession();
   const { data: resources } = useBookableResources();
   const createBookingMutation = useCreateBooking();
@@ -65,6 +67,12 @@ export function ReservationCreateForm({
         endTime: selectedEndTime ?? "09:00",
     },
   });
+
+  useEffect(() => {
+    if (!isSessionLoading && !activeSession.user) {
+      router.replace("/auth/sign-in");
+    }
+  }, [activeSession.user, isSessionLoading, router]);
 
   useEffect(() => {
     if (selectedResourceId) {
@@ -98,6 +106,7 @@ export function ReservationCreateForm({
 
   async function onSubmit(values: ReservationFormValues) {
     if (!activeSession.user) {
+      router.replace("/auth/sign-in");
       return;
     }
 

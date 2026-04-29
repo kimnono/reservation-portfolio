@@ -1,9 +1,7 @@
 import { BookingHomeView } from "@/features/booking/ui/booking-home-view";
-import {getSession} from "@/features/auth/api/session";
+import { getSession } from "@/features/auth/api/session";
 
-const session = await getSession();
-
-
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
   return <BookingHomeView session={session} />;
 }
